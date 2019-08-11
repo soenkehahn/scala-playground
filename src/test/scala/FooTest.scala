@@ -22,4 +22,17 @@ class FooTest extends org.scalatest.FunSuite {
     val list = Cons(1, Cons(2, Cons(3, Nil)))
     assert(list.map(x => x * 2).toString === "[2, 4, 6, ]")
   }
+
+  test("List.headSafe") {
+    assert(Cons(1, Nil).headSafe === Some(1))
+    assert(Nil.headSafe === None)
+  }
+
+  test("List.shortcutEithers") {
+    assert(Nil.shortcutEithers === Right(Nil))
+    assert(Cons(Right(1), Nil).shortcutEithers === Right(Cons(1, Nil)))
+    assert(Cons(Left("huhu"), Nil).shortcutEithers === Left("huhu"))
+    assert(Cons(Right(1), Cons(Left("huhu"), Nil)).shortcutEithers === Left("huhu"))
+    assert(Cons(Left("huhu"), Cons(Right(1), Nil)).shortcutEithers === Left("huhu"))
+  }
 }

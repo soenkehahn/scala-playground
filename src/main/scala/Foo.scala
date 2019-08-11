@@ -32,6 +32,20 @@ abstract sealed class List[+A] {
       case Cons(head, tail) => Cons(f(head), tail.map(f))
     }
   }
+
+  def headSafe(): Option[A] =
+    this match {
+      case Nil => None
+      case Cons(head, _) => Some(head)
+    }
+
+  def shortcutEithers[Error, Element, A <: Either[Error, Element]](): Either[Error, List[Element]] =
+    this match {
+      case Nil => Right(Nil)
+      case Cons(head, tail) => head match {
+        case Left(error) => Left(error)
+      }
+    }
 }
 
 case class Cons[A](head: A, tail: List[A]) extends List[A]
