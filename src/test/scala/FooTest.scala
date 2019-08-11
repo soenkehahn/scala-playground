@@ -39,4 +39,10 @@ class FooTest extends org.scalatest.FunSuite {
     assert(Cons(Right(1), Cons(Left("huhu"), Nil)).shortcutEithers === Left("huhu"))
     assert(Cons(Left("huhu"), Cons(Right(1), Nil)).shortcutEithers === Left("huhu"))
   }
+
+  test("List.foldLeft") {
+    val list = Cons(3, Cons(4, Cons(5, Nil)))
+    assert(list.foldLeft(0, (sum, n: Int) => sum + n) === 12)
+    assert(list.foldLeft(1, (mult, n: Int) => mult * n) === 60)
+  }
 }

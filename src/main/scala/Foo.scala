@@ -58,6 +58,11 @@ abstract sealed class List[+A] {
         }
       }
     }
+
+  def foldLeft[B](fNil: B, fCons: (A, B) => B): B = this match {
+    case Nil => fNil
+    case Cons(head, tail) => fCons(head, tail.foldLeft(fNil, fCons))
+  }
 }
 
 case class Cons[A](head: A, tail: List[A]) extends List[A]
