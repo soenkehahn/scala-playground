@@ -42,7 +42,12 @@ class FooTest extends org.scalatest.FunSuite {
 
   test("List.foldLeft") {
     val list = Cons(3, Cons(4, Cons(5, Nil)))
-    assert(list.foldLeft(0, (sum, n: Int) => sum + n) === 12)
-    assert(list.foldLeft(1, (mult, n: Int) => mult * n) === 60)
+    assert(list.foldLeft(0)(_ + _) === 12)
+    assert(list.foldLeft(1)(_ * _) === 60)
+  }
+
+  test("List as Countable") {
+    val list = Cons(3, Cons(4, Cons(5, Nil)))
+    assert(list.size === 3)
   }
 }

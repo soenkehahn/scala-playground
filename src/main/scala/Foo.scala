@@ -7,7 +7,7 @@ class Point(var x: Double, var y: Double) {
   override def toString(): String = s"(x = $x, y = $y)"
 }
 
-abstract sealed class List[+A] {
+abstract sealed class List[+A] extends Countable {
   override def toString(): String = {
     var result = "["
     var current = this;
@@ -59,12 +59,21 @@ abstract sealed class List[+A] {
       }
     }
 
-  def foldLeft[B](fNil: B, fCons: (A, B) => B): B = this match {
+  def foldLeft[B](fNil: B)(fCons: (A, B) => B): B = this match {
     case Nil => fNil
-    case Cons(head, tail) => fCons(head, tail.foldLeft(fNil, fCons))
+    case Cons(head, tail) => fCons(head, tail.foldLeft(fNil)(fCons))
+  }
+
+  override def size(): Int = this match {
+    case Nil => 0
+    case Cons(_, tail) => 1 + tail.size
   }
 }
 
 case class Cons[A](head: A, tail: List[A]) extends List[A]
 
 case object Nil extends List[Nothing]
+
+trait Countable {
+  def size(): Int
+}
