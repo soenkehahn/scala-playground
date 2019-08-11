@@ -18,9 +18,9 @@ class FooTest extends org.scalatest.FunSuite {
     assert(list.toString === "[1, 2, 3, ]")
   }
 
-  test("List.map") {
+  test("List.map_") {
     val list = Cons(1, Cons(2, Cons(3, Nil)))
-    assert(list.map(x => x * 2).toString === "[2, 4, 6, ]")
+    assert(list.map_(x => x * 2).toString === "[2, 4, 6, ]")
   }
 
   test("List.headSafe") {
@@ -40,14 +40,30 @@ class FooTest extends org.scalatest.FunSuite {
     assert(Cons(Left("huhu"), Cons(Right(1), Nil)).shortcutEithers === Left("huhu"))
   }
 
-  test("List.foldLeft") {
+  test("List.foldLeft_") {
     val list = Cons(3, Cons(4, Cons(5, Nil)))
-    assert(list.foldLeft(0)(_ + _) === 12)
-    assert(list.foldLeft(1)(_ * _) === 60)
+    assert(list.foldLeft_(0)(_ + _) === 12)
+    assert(list.foldLeft_(1)(_ * _) === 60)
   }
 
   test("List as Countable") {
     val list = Cons(3, Cons(4, Cons(5, Nil)))
-    assert(list.size === 3)
+    assert(list.size_ === 3)
+  }
+
+  test("List as custom Iterable") {
+    val list = Cons(3, Cons(4, Cons(5, Nil)))
+    var result = 0
+    list.foreach_((n) => result += n)
+    assert(result === 12)
+  }
+
+  test("List as standard Iterable") {
+    val list = Cons(3, Cons(4, Cons(5, Nil)))
+    var result = 0
+    for (n <- list) {
+      result += n
+    }
+    assert(result === 12)
   }
 }

@@ -7,7 +7,7 @@ class Point(var x: Double, var y: Double) {
   override def toString(): String = s"(x = $x, y = $y)"
 }
 
-abstract sealed class List[+A] extends Countable {
+abstract sealed class List[+A] extends Countable with Foreach[A] with Iterable[A] {
   override def toString(): String = {
     var result = "["
     var current = this;
@@ -26,10 +26,10 @@ abstract sealed class List[+A] extends Countable {
     return result
   }
 
-  def map[B](f: A => B): List[B] = {
+  def map_[B](f: A => B): List[B] = {
     this match {
       case Nil => Nil
-      case Cons(head, tail) => Cons(f(head), tail.map(f))
+      case Cons(head, tail) => Cons(f(head), tail.map_(f))
     }
   }
 
@@ -59,21 +59,51 @@ abstract sealed class List[+A] extends Countable {
       }
     }
 
-  def foldLeft[B](fNil: B)(fCons: (A, B) => B): B = this match {
+  def foldLeft_[B](fNil: B)(fCons: (A, B) => B): B = this match {
     case Nil => fNil
-    case Cons(head, tail) => fCons(head, tail.foldLeft(fNil)(fCons))
+    case Cons(head, tail) => fCons(head, tail.foldLeft_(fNil)(fCons))
   }
 
-  override def size(): Int = this match {
+  def size_(): Int = this match {
     case Nil => 0
-    case Cons(_, tail) => 1 + tail.size
+    case Cons(_, tail) => 1 + tail.size_
+  }
+
+  override def foreach_(f: A => Unit): Unit = {
+    var current = this
+    while (current != Nil) {
+      val Cons(head, tail) = current.asInstanceOf[Cons[A]]
+      f(head)
+      current = tail
+    }
+  }
+
+  def iterator(): Iterator[A] = {
+    class Iter(var current: List[A]) extends Iterator[A] {
+      def hasNext(): Boolean = this.current match {
+        case Nil => false
+        case Cons(_, _) => true
+      }
+      def next(): A = this.current match {
+        case Nil => throw new Exception("next: empty list")
+        case Cons(head, tail) => {
+          current = tail
+          head
+        }
+      }
+    }
+    new Iter(this)
   }
 }
 
-case class Cons[A](head: A, tail: List[A]) extends List[A]
+case class Cons[A](head_ : A, tail_ : List[A]) extends List[A]
 
 case object Nil extends List[Nothing]
 
 trait Countable {
-  def size(): Int
+  def size_(): Int
+}
+
+trait Foreach[+A] {
+  def foreach_(f: A => Unit): Unit
 }
