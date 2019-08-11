@@ -7,14 +7,14 @@ class Point(var x: Double, var y: Double) {
   override def toString(): String = s"(x = $x, y = $y)"
 }
 
-abstract sealed class List[A] {
+abstract sealed class List[+A] {
   override def toString(): String = {
     var result = "["
     var current = this;
     breakable {
-    while (true) {
+      while (true) {
         current match {
-          case Nil() => break
+          case Nil => break
           case Cons(head, tail) => {
             result = result.concat(s"$head, ")
             current = tail
@@ -28,7 +28,7 @@ abstract sealed class List[A] {
 
   def map[B](f: A => B): List[B] = {
     this match {
-      case Nil() => Nil()
+      case Nil => Nil
       case Cons(head, tail) => Cons(f(head), tail.map(f))
     }
   }
@@ -36,4 +36,4 @@ abstract sealed class List[A] {
 
 case class Cons[A](head: A, tail: List[A]) extends List[A]
 
-case class Nil[A]() extends List[A]
+case object Nil extends List[Nothing]

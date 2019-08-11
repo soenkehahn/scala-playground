@@ -14,12 +14,12 @@ class FooTest extends org.scalatest.FunSuite {
   }
 
   test("List.toString") {
-    val list = Cons(1, Cons(2, Cons(3, Nil())))
+    val list = Cons(1, Cons(2, Cons(3, Nil)))
     assert(list.toString === "[1, 2, 3, ]")
   }
 
   test("List.map") {
-    val list = Cons(1, Cons(2, Cons(3, Nil())))
+    val list = Cons(1, Cons(2, Cons(3, Nil)))
     assert(list.map(x => x * 2).toString === "[2, 4, 6, ]")
   }
 }
