@@ -39,11 +39,23 @@ abstract sealed class List[+A] {
       case Cons(head, _) => Some(head)
     }
 
-  def shortcutEithers[Error, Element, A <: Either[Error, Element]](): Either[Error, List[Element]] =
+  def filterSome[B](implicit ev: A <:< Option[B]): List[B] = this match {
+    case Nil => Nil
+    case Cons(head, tail) => ev(head) match {
+      case None => tail.filterSome
+      case Some(e) => Cons(e, tail.filterSome)
+    }
+  }
+
+  def shortcutEithers[Error, Element](implicit ev: A <:< Either[Error, Element]): Either[Error, List[Element]] =
     this match {
       case Nil => Right(Nil)
-      case Cons(head, tail) => head match {
+      case Cons(head, tail) => ev(head) match {
         case Left(error) => Left(error)
+        case Right(element) => tail.shortcutEithers match {
+          case Left(error) => Left(error)
+          case Right(tail) => Right(Cons(element, tail))
+        }
       }
     }
 }

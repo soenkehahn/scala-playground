@@ -28,6 +28,10 @@ class FooTest extends org.scalatest.FunSuite {
     assert(Nil.headSafe === None)
   }
 
+  test("List.filterSome") {
+    assert(Cons(Some(1), Cons(None, Cons(Some(2), Nil))).filterSome === Cons(1, Cons(2, Nil)))
+  }
+
   test("List.shortcutEithers") {
     assert(Nil.shortcutEithers === Right(Nil))
     assert(Cons(Right(1), Nil).shortcutEithers === Right(Cons(1, Nil)))
