@@ -8,5 +8,6 @@ lazy val root = (project in file(".")).
   )
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % Test
+libraryDependencies += "org.scala-graph" %% "graph-constrained" % "1.13.0"
 
 scalacOptions ++= Seq("-Xfatal-warnings")
