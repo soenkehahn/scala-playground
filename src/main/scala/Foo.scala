@@ -1,6 +1,5 @@
 import scala.math._
 import util.control.Breaks._
-import scalax.collection.Graph
 
 class Point(var x: Double, var y: Double) {
   def length(): Double = sqrt(scala.math.pow(x, 2) + scala.math.pow(y, 2))
